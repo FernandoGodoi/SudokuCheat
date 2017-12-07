@@ -12,7 +12,8 @@ package com.mycompany.sudokucheat;
 public class Solve {
 
     int[][] matriz;
-    int[][] matrizC;
+    int[][] matrizC = new int[9][9];
+    int[][] matrizR;
 
     public Solve() {
 
@@ -20,46 +21,75 @@ public class Solve {
 
     public int[][] start(int[][] matriz) {
         this.matriz = matriz;
-        this.matrizC = matriz.clone();
-        System.out.println(res(0, 0,matriz));
-        return this.matriz;
-    }
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                this.matrizC[i][j] = matriz[i][j];
+            }
+        } 
 
-    public boolean res(int l, int c,int[][]mat) {
-        int[][] matrizA = mat.clone();
-        if (matrizC[l][c] < 1) {
-            for (int i = 1; i < 10; i++) {
-                if (test(l, c, i,matrizA)) {
-                    if (l == 8 && c == 8) {
-                        return true;
+        return res(0, 0, matriz);
+    }
+    public void print(int[][] mat){
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                System.out.print("- "+mat[i][j]);
+            }
+            System.out.print("\n");
+        } 
+    }
+    public int[][] populate(int[][] mat){
+        int[][] matrizA = new int[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                matrizA[i][j] = mat[i][j];
+            }
+        }
+        return matrizA;
+    }
+    public int[][] res(int l, int c, int[][] mat) {
+        //System.out.print("\n"+l + " - " + c);
+        int[][] matrizA = new int[9][9];
+        matrizA = populate(mat);
+        for (int i = 1; i < 10; i++) {
+            //System.out.print(" i:"+i);
+            
+            while (matrizC[l][c] >= 1) {
+                if (l == 8 && c == 8) {
+                    System.out.println("aquia");
+                    this.matrizR = matrizA.clone();
+                    return matrizA;
+                } else {
+                    if (c == 8) {
+                        l += 1;
+                        c=0;
                     } else {
-                        if (c == 8) {
-                            res(l + 1, 0,matrizA);
-                        } else {
-                            res(l, c + 1,matrizA);
-                        }
+                        c += 1;
                     }
                 }
+               // System.out.print("\n"+l + " - " + c);
             }
-        } else {
 
-            if (l == 8 && c == 8) {
-                return true;
-            } else {
-                if (c == 8) {
-                    res(l + 1, 0,matrizA);
+            if (test(l, c, i, matrizA)) {
+                if (l == 8 && c == 8) {
+                    System.out.println("aqui");
+                    print(matrizA);
+                    break;
                 } else {
-                    res(l, c + 1,matrizA);
+                    if (c == 8) {
+                        res(l + 1, 0, matrizA);
+                    } else {
+                        res(l, c + 1, matrizA);
+                    }
                 }
+                //System.out.print("\n"+l + " - " + c);
             }
-
         }
-        this.matriz = matrizA;
-        return false;
+
+        return matrizA;
     }
 
-    public boolean test(int l, int c, int i, int[][]matriz) {
-        for (int j = 0; j <9; j++) {
+    public boolean test(int l, int c, int i, int[][] matriz) {
+        for (int j = 0; j < 9; j++) {
             if (matriz[l][j] == i) {
                 return false;
             }
@@ -175,7 +205,7 @@ public class Solve {
                 }
             }
         }
-        matriz[l][c]=i;
+        matriz[l][c] = i;
         return true;
     }
 
